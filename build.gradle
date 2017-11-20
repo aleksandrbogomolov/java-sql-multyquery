@@ -1,0 +1,34 @@
+apply plugin: 'java'
+
+group = 'com.aleksandrbogomolov'
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url "http://nexusrepo.corp.tander.ru:8080/nexus/content/groups/public/"
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework:spring-context:5.0.1.RELEASE',
+            'com.oracle:ojdbc7:12.1.0.2.0'
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'ORA JAVA',
+                'Implementation-Version': version,
+                'Main-Class': 'com.aleksandrbogomolov.ora.OraJavaApplication'
+    }
+    baseName = 'ora'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task make(type: Copy) {
+    into "${project.rootDir}/resources"
+    from "${project.buildDir}/libs"
+    dependsOn fatJar
+}
