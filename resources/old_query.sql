@@ -1,3 +1,11 @@
+SELECT status, count(*) FROM rpl_user.fde_vetrequest_queue WHERE status IN (1, 2, 3) and enqueue_time <= sysdate - 1/48 and enqueue_time >= sysdate - 2 GROUP BY status
+
+SELECT request_type, status, count(*) FROM rpl_user.fde_vetrequest_queue
+WHERE status IN (1, 2, 3)
+and enqueue_time <= sysdate - 1/48
+and enqueue_time >= sysdate - 2
+GROUP BY request_type, status
+
 select max(code || ' ' || fullname) from warehouse where id_controwner is not null;
 with bad_requests as
 (select status, trunc(cast(create_date as timestamp), 'HH') date_hour, count(id_queue) requests_cnt,

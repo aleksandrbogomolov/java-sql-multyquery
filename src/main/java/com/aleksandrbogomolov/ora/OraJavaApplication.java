@@ -15,28 +15,37 @@ public class OraJavaApplication {
 
   public static void main(String[] args) throws SQLException {
     OracleDataSource dataSource = new OracleDataSource();
-    String sql = readQuery();
-    System.out.println(sql);
+    String[] sqls = readQuery();
     parseTns().forEach((key, value) -> {
-      dataSource.setURL("jdbc:oracle:thin:@" + value);
-      try (Connection connection = dataSource.getConnection("", "")) {
-        PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet resultSet = statement.executeQuery();
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        System.out.println(key);
-        while (resultSet.next()) {
-          StringBuilder result = new StringBuilder();
-          for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            if (i > 1) {
-              result.append(" | ");
+      for (String sql : sqls) {
+        dataSource.setURL("jdbc:oracle:thin:@" + value);
+        try (Connection connection = dataSource.getConnection("bogomolov_av", "")) {
+          PreparedStatement statement = connection.prepareStatement(sql);
+          ResultSet resultSet = statement.executeQuery();
+          ResultSetMetaData metaData = resultSet.getMetaData();
+//          StringBuilder columnName = new StringBuilder();
+//          for (int i = 1; i <= metaData.getColumnCount(); i++) {
+//            if (i > 1) {
+//              columnName.append(" | ");
+//            }
+//            columnName.append(metaData.getColumnName(i));
+//          }
+//          System.out.println(columnName.toString());
+          while (resultSet.next()) {
+            StringBuilder result = new StringBuilder();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+              if (i > 1) {
+                result.append(" | ");
+              }
+              result.append(DbHelper.getValueAsString(metaData, resultSet, i));
             }
-            result.append(DbHelper.getValueAsString(metaData, resultSet, i));
+            System.out.println(result);
           }
-          System.out.println(result);
+        } catch (SQLException ex) {
+          System.out.println(key + " - " + ex.getMessage());
         }
-      } catch (SQLException ex) {
-        System.out.println(key + " - " + ex.getMessage());
       }
+      System.out.println();
     });
   }
 }

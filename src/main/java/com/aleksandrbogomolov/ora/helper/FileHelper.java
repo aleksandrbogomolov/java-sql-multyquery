@@ -12,15 +12,15 @@ import java.util.stream.Collectors;
  */
 public class FileHelper {
 
-  public static String readQuery() {
+  public static String[] readQuery() {
     String builder = "";
     try {
       BufferedReader reader = new BufferedReader(new FileReader("resources/query.sql"));
-      builder = reader.lines().collect(Collectors.joining());
+      builder = reader.lines().collect(Collectors.joining(" "));
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return builder;
+    return builder.split(";");
   }
 
   public static Map<String, String> parseTns() {

@@ -16,7 +16,7 @@ dependencies {
             'com.oracle:ojdbc7:12.1.0.2.0'
 }
 
-task fatJar(type: Jar) {
+task make(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'ORA JAVA',
                 'Implementation-Version': version,
@@ -25,10 +25,4 @@ task fatJar(type: Jar) {
     baseName = 'ora'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
-}
-
-task make(type: Copy) {
-    into "${project.rootDir}/resources"
-    from "${project.buildDir}/libs"
-    dependsOn fatJar
 }
