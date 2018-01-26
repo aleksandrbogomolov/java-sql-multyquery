@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 group = 'com.aleksandrbogomolov'
-version = '0.0.1'
+version = '0.1.0'
 sourceCompatibility = 1.8
 
 repositories {
@@ -12,15 +12,16 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework:spring-context:5.0.1.RELEASE',
-            'com.oracle:ojdbc7:12.1.0.2.0'
+    compile 'com.oracle:ojdbc7:12.1.0.2.0',
+            'ch.qos.logback:logback-classic:1.2.3'
+
 }
 
 task make(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'ORA JAVA',
                 'Implementation-Version': version,
-                'Main-Class': 'com.aleksandrbogomolov.ora.OraJavaApplication'
+                'Main-Class': 'com.aleksandrbogomolov.ora.Main'
     }
     baseName = 'ora'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
