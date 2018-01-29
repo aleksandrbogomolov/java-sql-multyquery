@@ -2,7 +2,10 @@ package com.aleksandrbogomolov.ora;
 
 import com.aleksandrbogomolov.ora.helper.AuthHelper;
 import com.aleksandrbogomolov.ora.helper.FileHelper;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -19,7 +22,8 @@ public class Main {
 
   private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-  public static void main(String[] args) throws SQLException {
+  public static void main(String[] args) {
+    setSystemOut(args);
     final String user = AuthHelper.getUserName();
     final char[] password = AuthHelper.getPassword();
     String[] sqls = FileHelper.readQuery();
@@ -45,6 +49,18 @@ public class Main {
       System.out.println(r.get());
     } catch (InterruptedException | ExecutionException e) {
       log.warn("Cannot get result from future {}", e);
+    }
+  }
+
+  private static void setSystemOut(String[] args) {
+    if (args.length > 0) {
+      try {
+        String currentDir = System.getProperty("user.dir");
+        File file = new File(currentDir, args[0]);
+        System.setOut(new PrintStream(new FileOutputStream(file)));
+      } catch (FileNotFoundException e) {
+        log.error("File not found {}", e);
+      }
     }
   }
 }
