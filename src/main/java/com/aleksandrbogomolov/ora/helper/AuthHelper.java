@@ -7,13 +7,13 @@ import java.io.Console;
  */
 public class AuthHelper {
 
-  private static final Console console = System.console();
+    private static final Console console = System.console();
 
-  public static String getUserName() {
-    return console.readLine("Enter user name: ");
-  }
+    public static String getUserName() {
+        return console.readLine("Enter user name: ");
+    }
 
-  public static char[] getPassword() {
-    return console.readPassword("Enter password: ");
-  }
+    public static char[] getPassword() {
+        return console.readPassword("Enter password: ");
+    }
 }
