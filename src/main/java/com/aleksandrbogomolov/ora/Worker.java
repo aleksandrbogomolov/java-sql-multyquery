@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
  */
 public class Worker implements Callable<String> {
 
-    private final Logger log = LoggerFactory.getLogger(Worker.class);
+    private static final Logger log = LoggerFactory.getLogger(Worker.class);
 
     private final String url;
 
@@ -21,17 +21,17 @@ public class Worker implements Callable<String> {
 
     private final String password;
 
-    private final String[] sqls;
+    private final String[] queries;
 
     private final String rcName;
 
     private OracleDataSource dataSource;
 
-    Worker(String url, String userName, char[] password, String[] sqls, String rcName) {
+    Worker(String url, String userName, char[] password, String[] queries, String rcName) {
         this.url = url;
         this.userName = userName;
         this.password = String.valueOf(password);
-        this.sqls = sqls;
+        this.queries = queries;
         this.rcName = rcName;
         try {
             this.dataSource = new OracleDataSource();
@@ -45,8 +45,8 @@ public class Worker implements Callable<String> {
         dataSource.setURL("jdbc:oracle:thin:@" + url);
         try (Connection connection = dataSource.getConnection(userName, password)) {
             StringBuilder result = new StringBuilder();
-            for (String sql : sqls) {
-                PreparedStatement statement = connection.prepareStatement(sql);
+            for (String query : queries) {
+                PreparedStatement statement = connection.prepareStatement(query);
                 ResultSet resultSet = statement.executeQuery();
                 ResultSetMetaData metaData = resultSet.getMetaData();
                 while (resultSet.next()) {

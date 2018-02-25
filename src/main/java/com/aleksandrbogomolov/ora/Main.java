@@ -27,17 +27,18 @@ public class Main {
         setSystemOut(args);
         final String user = AuthHelper.getUserName();
         final char[] password = AuthHelper.getPassword();
-        String[] sqls = FileHelper.readQuery();
+        String[] queries = FileHelper.readQuery();
+
         System.out.println(getFormattedCurrentDateTime() + "\n");
 
         ExecutorService executor = Executors.newFixedThreadPool(10);
         List<Future<String>> resultList = new ArrayList<>();
 
         FileHelper.parseTns().forEach((key, value) -> {
-            resultList.add(executor.submit(new Worker(value, user, password, sqls, key)));
+            resultList.add(executor.submit(new Worker(value, user, password, queries, key)));
         });
 
-        resultList.forEach(Main::accept);
+        resultList.forEach(Main::getThreadResult);
         executor.shutdown();
     }
 
@@ -45,7 +46,7 @@ public class Main {
         return LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     }
 
-    private static void accept(Future<String> r) {
+    private static void getThreadResult(Future<String> r) {
         try {
             System.out.println(r.get());
         } catch (InterruptedException | ExecutionException e) {
