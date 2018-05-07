@@ -3,7 +3,9 @@ package com.aleksandrbogomolov.ora.helper;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class FileHelper {
 
-    public static String[] readQuery() {
+    public static List<String> readQuery() {
         String builder = "";
         try {
             BufferedReader reader = new BufferedReader(new FileReader("resources/query.sql"));
@@ -20,7 +22,7 @@ public class FileHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return builder.split(";");
+        return Arrays.asList(builder.split(";"));
     }
 
     public static Map<String, String> parseTns() {

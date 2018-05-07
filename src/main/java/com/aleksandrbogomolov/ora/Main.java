@@ -27,7 +27,7 @@ public class Main {
         setSystemOut(args);
         final String user = AuthHelper.getUserName();
         final char[] password = AuthHelper.getPassword();
-        String[] queries = FileHelper.readQuery();
+        List<String> queries = FileHelper.readQuery();
 
         System.out.println(getFormattedCurrentDateTime() + "\n");
 
@@ -46,9 +46,12 @@ public class Main {
         return LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     }
 
-    private static void getThreadResult(Future<String> r) {
+    private static void getThreadResult(Future<String> future) {
         try {
-            System.out.println(r.get());
+            while (!future.isDone()) {
+                Thread.sleep(1000);
+            }
+            System.out.println(future.get());
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Cannot get result from future {}", e);
         }

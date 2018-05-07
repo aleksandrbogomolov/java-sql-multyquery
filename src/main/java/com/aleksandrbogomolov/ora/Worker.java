@@ -1,6 +1,7 @@
 package com.aleksandrbogomolov.ora;
 
 import com.aleksandrbogomolov.ora.helper.DbHelper;
+import java.util.List;
 import oracle.jdbc.pool.OracleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +22,13 @@ public class Worker implements Callable<String> {
 
     private final String password;
 
-    private final String[] queries;
+    private final List<String> queries;
 
     private final String rcName;
 
     private OracleDataSource dataSource;
 
-    Worker(String url, String userName, char[] password, String[] queries, String rcName) {
+    Worker(String url, String userName, char[] password, List<String> queries, String rcName) {
         this.url = url;
         this.userName = userName;
         this.password = String.valueOf(password);
